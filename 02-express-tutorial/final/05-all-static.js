@@ -3,7 +3,8 @@ const path = require('path')
 
 const app = express()
 
-// setup static and middleware
+// SETUP STATIC AND MIDDLEWARE
+// STATIC FILES ARE FILES THAT THE SERVER DOES NOT HAVE TO CHANGE
 app.use(express.static('./public'))
 
 // app.get('/', (req, res) => {

@@ -1,30 +1,21 @@
 const express = require('express');
 const app = express();
+const {products, people} = require('./data.js');
 
 app.get('/', (req, res) => {
-    console.log('hit resource');
-    res.status(200).send('Home page');
+   res.send('<h1>HOME PAGE</h1><a href="/api/products">products</a>')
 });
 
-app.get('/about', (req, res) => {
-    res.status(200).send('ABOUT PAGE');
-});
-
-app.all('*', (req, res) => {
-    res.status(404).send('<h1>resource not found</h1>')
-});
+app.get('/api/products', (req, res) => {
+    const newProducts = products.map((product) => {
+        const {id, name, image} = product;
+        return {id, name, image};
+    })
+    res.json(newProducts);
+})
 
 app.listen(3000, () => {
     console.log("3000 server has started");
 });
 
-// 5:03:11
-// npm install express@4.17.1 --save
-
-// app.get
-// app.post
-// app.put
-// app.delete
-// app.all
-// app.use
-// app.listen
+// 5:39:18
