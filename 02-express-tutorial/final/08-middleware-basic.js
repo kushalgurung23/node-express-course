@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 
+// middleware are functions that executes during request to server and has access to request and response objects
 //  req => middleware => res
 
 const logger = (req, res, next) => {

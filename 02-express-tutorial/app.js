@@ -1,56 +1,97 @@
 const express = require('express');
 const app = express();
-const {products, people} = require('./data.js');
+const {people} = require('./data.js')
 
-app.get('/', (req, res) => {
-   res.send('<h1>HOME PAGE</h1><a href="/api/products">products</a>')
+// static assets
+app.use(express.static('./methods-public'))
+// parse form data
+app.use(express.urlencoded({extended: false}))
+// parse json
+app.use(express.json())
+
+app.get('/api/people', (req, res) => {
+    res.status(200).json({success: true, data: people});
+})
+
+app.post('/login', (req, res) => {
+    console.log(req.body);
+    const {name} = req.body;
+    if(name) {
+        return res.status(200).send(`WELCOME ${name}`);
+    }
+
+    return res.status(401).send("Please provide credentials");
+})
+
+app.post('/api/people', (req, res) => {
+    console.log(req.body);
+    const {name} = req.body;
+    if(name) {
+        return (res.status(201).send({success: true, person: name}));
+    }
+    else {
+        return (res.status(400).json({success: false, msg: "please provide name"}));
+    }
+    
+})
+
+app.post('/api/postman/people', (req, res) => {
+    console.log(req.body);
+    const {name} = req.body;
+    if(name) {
+        return(res.status(201).json({success: true, data: [...people, {"name": name}]}));
+    }
+    else {
+       return(res.status(400).json({success:false, msg: "Provide name"}));
+    }
+    
 });
 
-app.get('/api/products', (req, res) => {
-    const newProducts = products.map((product) => {
-        const {id, name, image} = product;
-        return {id, name, image};
+app.put('/api/postman/people/:id', (req, res) => {
+    const {id} = req.params;
+    const {name} = req.body;
+
+    if(!id || !name) {
+        return(res.status(400).json({success: false, msg: "provide id and name"}));
+    }
+    const onePerson = people.find((data) => {
+        return data.id === Number(id);
+    });
+    if(!onePerson) {
+        return (res.status(404).json({success: false, msg: "People not found"}));
+    }
+    const newPeople = people.map((data) => {
+        if(data.id === onePerson.id) {
+            data.name = name;
+        }
+        return data;
     })
-    res.json(newProducts);
+    return(res.status(200).json({success: true, data: newPeople}))
 })
 
-// ROUTE PARAMETER
-app.get('/api/products/:productId', (req, res) => {
-    const {productId} = req.params;
-    const singleProduct = products.find((product) => product.id === Number(productId));
-    if(!singleProduct) {
-        return res.status(404).send('Product does not exist.');
+app.delete('/api/postman/people/:id', (req, res) => {
+    const {id} = req.params;
+    if(!id) {
+        return(res.status(400).json({success: false, msg: "provide id to delete"}));
     }
-    const {id, name} = singleProduct;
-    res.json({id, name});
+    const onePerson = people.find((data) => {
+        return data.id === Number(id);
+    });
+    if(!onePerson) {
+        return (res.status(404).json({success: false, msg: "People not found"}));
+    }
+    const newPeople = people.filter((person) => {
+       return person.id !== Number(id);
+    })
+    return(res.status(200).json({success: true, data: newPeople}));
 })
 
-app.get('/api/products/:productId/reviews/:reviewId', (req, res) => {
-    console.log(req.params);
-    res.send('HELLO ROUTE PARAMETERS');
-})
-
-// QUERY PARAMETER
-app.get('/api/v1/query', (req, res) => {
-    const {search, limit} = req.query;
-    // spread operator iterates over the array and adds them into a new array
-    let sortedProducts = [...products];
-    if(search) {
-        sortedProducts = sortedProducts.filter((product) => {
-            return product.name.startsWith(search);
-        })
-    }
-    if(limit) {
-        sortedProducts = sortedProducts.slice(0, Number(limit))
-    }
-    if(sortedProducts.length < 1) {
-        res.status(200).json({success: true, data: []})
-    }
-    res.status(200).json({success: true, data: sortedProducts});
+app.all('*', (req, res) => {
+    res.send('no data found');
 })
 
 app.listen(3000, () => {
     console.log("3000 server has started");
 });
 
-// 6:07:36
+// 7:50:18
