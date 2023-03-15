@@ -1,9 +1,14 @@
+const Task = require('../models/Task')
+const Book = require('../models/Book')
+
 const getAllTasks = (req, res) => {
     res.json({success: true, msg: "Get all task"})
 }
 
-const createTask = (req, res) => {
-    res.json(req.body)
+const createTask = async (req, res) => {
+    // const task = await Task.create({name: "Bottle", completed: true})
+    const task = await Task.create(req.body)
+    return(res.json({task}));
 }
 
 const getSingleTask = (req, res) => {
