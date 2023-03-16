@@ -1,27 +1,57 @@
 const Task = require('../models/Task')
 const Book = require('../models/Book')
 
-const getAllTasks = (req, res) => {
-    res.json({success: true, msg: "Get all task"})
+const getAllTasks = async (req, res) => {
+    try {
+        const tasks = await Task.find({});
+        return (res.status(200).json({tasks}))
+    }
+    catch(error) {
+        return res.status(500).json({success: false, msg: error})
+    }
+    
 }
 
 const createTask = async (req, res) => {
-    // const task = await Task.create({name: "Bottle", completed: true})
-    const task = await Task.create(req.body)
+    try {
+        const task = await Task.create(req.body)
     return(res.json({task}));
+    }
+    catch(error) {
+        return res.status(500).json({success: false, msg: error})
+    }
 }
 
-const getSingleTask = (req, res) => {
-    const { id } = req.params;
-    res.send(`id is ${id}`)
+const getSingleTask = async (req, res) => {
+    try {
+       const {id:taskId} = req.params;
+        const task = await Task.findOne({_id: taskId})
+        if(!task) {
+            return res.status(404).json({success: false, msg: "task not found"})
+        }
+         res.status(200).json({task})
+    }
+   catch(error) {
+    return res.status(500).json({success: false, msg: error})
+   }
 }
 
 const updateTask = (req, res) => {
     res.send('update tasks')
 }
 
-const deleteTask = (req, res) => {
-    res.send('delete task')
+const deleteTask = async (req, res) => {
+    try {
+        const {id: taskId} = req.params;
+        const task = await Task.findOneAndDelete({_id: taskId})
+        if(!task) {
+            return res.status(404).json({success: false, msg: "delete fail"})
+        }
+        return res.status(200).json({success: true, msg: "delete successful"})
+    }
+    catch(error) {
+        return res.status(500).json({success: false, msg: error})
+    }
 }
 
 module.exports = {

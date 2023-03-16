@@ -10,10 +10,6 @@ app.use(express.json())
 // routes
 app.use('/api/v1/tasks', tasks);
 
-app.get('/hello', (req, res) => {
-    res.send('task manager app');
-})
-
 const port = 3000;
 
 const start = async () => {
@@ -30,4 +26,4 @@ const start = async () => {
 
 start()
 
-// 1:36:30
+// 2:06:09
