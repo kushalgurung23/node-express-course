@@ -4,22 +4,26 @@ const tasks = require('./routes/tasks')
 const connectDB = require('./db/connect')
 const notFound = require('./middlewares/not-found')
 require('dotenv').config()
+const errorHandlerMiddleware = require('./middlewares/error-handler')
 
 // middlewares
-app.use(express.static('./public'))
-app.use(express.json())
+app.use(express.static('./public'))  // HTML CSS JS FILES
+app.use(express.json())  // convert res.body to json format
 
 // routes
 app.use('/api/v1/tasks', tasks);
-app.use(notFound)
 
-const port = 3000;
+// put below routes
+app.use(notFound)  // app.use('*', (req, res) => {})   for routes that are not available
+app.use(errorHandlerMiddleware)  // built-in express error handler for middlewares
+
+const port = process.env.PORT || 3000;
 
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URI)
         app.listen(port, () => { 
-            console.log("Server 3000 has started");
+            console.log(`Server ${port} has started`);
         })
     }
     catch(error) {
@@ -28,5 +32,3 @@ const start = async () => {
 }
 
 start()
-
-// 2:36:40
