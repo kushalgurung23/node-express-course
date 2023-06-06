@@ -7,18 +7,21 @@ const app = express();
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
+const emailController = require('./controllers/sendEmail')
 
 app.use(express.json());
 
 // routes
 app.get('/', (req, res) => {
-  res.send('<h1>Email Project</h1>');
+  res.send('<h1>Email Project</h1> <a href="/send"> Send email</a>');
 });
+
+app.get('/send', emailController)
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
