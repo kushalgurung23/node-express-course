@@ -17,9 +17,9 @@ const sendEmailEtherial = async (req, res) => {
     // Message object
     const message = {
         from: 'Chelsea FC <chelseafc@gmail.com>',
-        to: 'adishgandu@gmail.com',
+        to: 'qoosal23.kg@gmail.com',
         subject: 'Cleaner Role Offer',
-        html: '<p><b>Hello</b> Adish Gandu, We are pleased to welcome you to Chelsea FC as first team laundry and pitch cleaner.</p>'
+        html: '<p><b>Hello</b> Kushal, We are pleased to welcome you to Chelsea FC as first team laundry and pitch cleaner.</p>'
     };
 
     transporter.sendMail(message, (err, info) => {
